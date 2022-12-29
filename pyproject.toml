@@ -1,8 +1,8 @@
 [project]
-name = "mypackage"
+name = "discordbot"
 version = "0.0.1"
 dependencies = [
-    "discord.py>=2.1.0"
+    "discord.py >= 2.1.0"
 ]
 
 [build-system]
