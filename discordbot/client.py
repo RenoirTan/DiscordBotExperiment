@@ -44,9 +44,28 @@ async def hello(ctx: commands.Context):
     When someone sends '=hello' in chat, print '[user] says hello' to console
     """
     print(f"{ctx.author.name} says hello", flush=True) # flush=True to make pylance shut up
+    await ctx.send("Hi")
 
 
-COMMAND_LIST: t.List[commands.Command] = [hello]
+@commands.command(name="ul")
+async def upper_lower(ctx: commands.Context, *args: str):
+    """
+    Convert each argument into upper or lower case alternatingly.
+    """
+    message = ""
+    
+    for index, arg in enumerate(args):
+        new_arg = ""
+        if index % 2 == 0: # Zeroeth, second and so on become upper case
+            new_arg = arg.upper()
+        else:              # First, third and so on become lower case
+            new_arg = arg.lower()
+        message += new_arg + " "
+    
+    await ctx.send(message)
+
+
+COMMAND_LIST: t.List[commands.Command] = [hello, upper_lower]
 """List of commands our bot uses."""
 
 
