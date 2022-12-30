@@ -1,34 +1,60 @@
 import logging
 import logging.handlers
 import os
+import typing as t
 
 import discord
 from discord.ext import commands
 
 from discordbot.utils import COMMAND_PREFIX, register_commands
 
+
+__ALL__ = ["MyClient", "COMMAND_LIST", "run_bot", "hello"]
+
+
 class MyClient(commands.Bot):
+    """
+    Object oriented programming much wow.
+    """
+    
+    # When the bot has successfully started
     async def on_ready(self):
         print(f"Logged on as {self.user}")
     
-    async def on_message(self, message):
-        await super().on_message(message) # pass it onto commands.Bot command redirection thing
+    # When the bot sees a message in a server (from whatever channel)
+    async def on_message(self, message: discord.Message):
+        
+        # check if the message was sent by us (the bot)
+        # if so, we should quickly return so that we don't end up replying to
+        # ourselves
         if message.author == self.user:
             return
+        
+        # print the message to console for logging purposes of course
         print(f"Message from {message.author}: {message.content}")
+        
+        # pass the message onto commands.Bot's on_message so that it can
+        # redirect it to the correct command
+        await super().on_message(message)
 
 
 @commands.command()
 async def hello(ctx: commands.Context):
+    """
+    When someone sends '=hello' in chat, print '[user] says hello' to console
+    """
     print(f"{ctx.author.name} says hello", flush=True) # flush=True to make pylance shut up
 
 
-COMMAND_LIST = [hello]
+COMMAND_LIST: t.List[commands.Command] = [hello]
 """List of commands our bot uses."""
 
 
-def run_bot(args):
-    token = None
+def run_bot(args: t.List[str]):
+    """
+    One function to get the bot running. Similar to int main(int, char**) in C.
+    """
+    token: t.Optional[str] = None
     if len(args) < 2:
         token = os.environ["DISCORD_TOKEN"]
     else:
@@ -39,9 +65,15 @@ def run_bot(args):
             else:
                 token = line.strip()
 
+    # Intents on discord are like permissions on your smartphone
+    # Here we want to be able to read what a message says
+    # so we set intents.message_content = True
     intents = discord.Intents.default()
     intents.message_content = True
 
+    # Setup for logging
+    # Stolen from `https://discordpy.readthedocs.io/en/stable/logging.html`
+    # Logs will be dumped to ./discord.log
     logger = logging.getLogger("discord")
     logger.setLevel(logging.DEBUG)
     logging.getLogger("discord.http").setLevel(logging.INFO)
@@ -59,6 +91,9 @@ def run_bot(args):
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
+    # Get our bot object
     client = MyClient(command_prefix=COMMAND_PREFIX, intents=intents)
+    # Add the commands we have defined previously
     register_commands(client, COMMAND_LIST)
+    # Run our bot
     client.run(token, log_handler=None)
