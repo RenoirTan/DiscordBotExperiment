@@ -9,7 +9,7 @@ from discord.ext import commands
 from discordbot.utils import COMMAND_PREFIX, register_commands
 
 
-__ALL__ = ["MyClient", "COMMAND_LIST", "run_bot", "hello"]
+__ALL__ = ["MyClient", "COMMAND_LIST", "run_bot", "hello", "upper_lower"]
 
 
 class MyClient(commands.Bot):
