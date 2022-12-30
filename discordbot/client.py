@@ -30,7 +30,7 @@ def run_bot(args):
 
     logger = logging.getLogger("discord")
     logger.setLevel(logging.DEBUG)
-    logging.getLogger("discord.http").setLevel(logging.DEBUG)
+    logging.getLogger("discord.http").setLevel(logging.INFO)
     handler = logging.handlers.RotatingFileHandler(
         filename="discord.log",
         encoding="utf-8",
