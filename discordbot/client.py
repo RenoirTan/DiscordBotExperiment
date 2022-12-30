@@ -1,5 +1,6 @@
 import logging
 import logging.handlers
+import os
 
 import discord
 
@@ -14,16 +15,16 @@ class MyClient(discord.Client):
 
 
 def run_bot(args):
-    if len(args) < 2:
-        raise Exception("No file path provided for token!")
-    
     token = None
-    with open(args[1], "r") as f:
-        line = f.readline()
-        if not line:
-            raise Exception("Token file is empty")
-        else:
-            token = line.strip()
+    if len(args) < 2:
+        token = os.environ["DISCORD_TOKEN"]
+    else:
+        with open(args[1], "r") as f:
+            line = f.readline()
+            if not line:
+                raise Exception("Token file is empty")
+            else:
+                token = line.strip()
 
     intents = discord.Intents.default()
     intents.message_content = True
