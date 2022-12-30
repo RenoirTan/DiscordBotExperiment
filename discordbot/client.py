@@ -3,15 +3,28 @@ import logging.handlers
 import os
 
 import discord
+from discord.ext import commands
 
-class MyClient(discord.Client):
+from discordbot.utils import COMMAND_PREFIX, register_commands
+
+class MyClient(commands.Bot):
     async def on_ready(self):
         print(f"Logged on as {self.user}")
     
     async def on_message(self, message):
+        await super().on_message(message) # pass it onto commands.Bot command redirection thing
         if message.author == self.user:
             return
         print(f"Message from {message.author}: {message.content}")
+
+
+@commands.command()
+async def hello(ctx: commands.Context):
+    print(f"{ctx.author.name} says hello", flush=True) # flush=True to make pylance shut up
+
+
+COMMAND_LIST = [hello]
+"""List of commands our bot uses."""
 
 
 def run_bot(args):
@@ -46,5 +59,6 @@ def run_bot(args):
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
-    client = MyClient(intents=intents)
+    client = MyClient(command_prefix=COMMAND_PREFIX, intents=intents)
+    register_commands(client, COMMAND_LIST)
     client.run(token, log_handler=None)
