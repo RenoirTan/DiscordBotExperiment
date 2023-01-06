@@ -65,7 +65,16 @@ async def upper_lower(ctx: commands.Context, *args: str):
     await ctx.send(message)
 
 
-COMMAND_LIST: t.List[commands.Command] = [hello, upper_lower]
+@commands.command(name="me")
+async def mention(ctx: commands.Context):
+    """
+    Mention user who used command
+    """
+    message = f"<@{ctx.author.id}> wants a mention"
+    await ctx.send(message)
+
+
+COMMAND_LIST: t.List[commands.Command] = [hello, upper_lower, mention]
 """List of commands our bot uses."""
 
 
